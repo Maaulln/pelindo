@@ -1,0 +1,193 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Updated color tokens to match enhanced design brief with emerald green primary and professional neutrals */
+  --background: #ffffff; /* Pure white main background */
+  --foreground: #374151; /* Dark gray text for primary content */
+  --card: #f8fafc; /* Very light gray for card backgrounds */
+  --card-foreground: #475569; /* Medium gray text within cards */
+  --popover: #ffffff; /* White popover background */
+  --popover-foreground: #374151; /* Dark gray popover text */
+  --primary: #059669; /* Emerald-600 for primary actions and highlights */
+  --primary-foreground: #ffffff; /* White text on primary buttons */
+  --secondary: #10b981; /* Vibrant emerald for secondary actions */
+  --secondary-foreground: #ffffff; /* White text on secondary buttons */
+  --muted: #f1f5f9; /* Light slate for muted sections */
+  --muted-foreground: #64748b; /* Slate-500 for muted text */
+  --accent: #10b981; /* Vibrant emerald accent */
+  --accent-foreground: #ffffff; /* White text on accent elements */
+  --destructive: #dc2626; /* Red-600 for error messages */
+  --destructive-foreground: #ffffff; /* White text on error elements */
+  --border: #e2e8f0; /* Light slate borders */
+  --input: #f8fafc; /* Very light gray input backgrounds */
+  --ring: rgba(5, 150, 105, 0.3); /* Emerald focus ring with transparency */
+  --chart-1: #059669; /* Emerald chart color */
+  --chart-2: #10b981; /* Vibrant emerald chart color */
+  --chart-3: #f59e0b; /* Amber chart color */
+  --chart-4: #dc2626; /* Red chart color */
+  --chart-5: #8b5cf6; /* Violet chart color */
+  --radius: 0.75rem; /* Increased border radius for modern look */
+  --sidebar: #f8fafc; /* Light gray sidebar */
+  --sidebar-foreground: #374151; /* Dark gray sidebar text */
+  --sidebar-primary: #059669; /* Emerald sidebar primary */
+  --sidebar-primary-foreground: #ffffff; /* White sidebar primary text */
+  --sidebar-accent: #10b981; /* Vibrant emerald sidebar accent */
+  --sidebar-accent-foreground: #ffffff; /* White sidebar accent text */
+  --sidebar-border: #e2e8f0; /* Light slate sidebar border */
+  --sidebar-ring: rgba(5, 150, 105, 0.3); /* Emerald sidebar focus ring */
+}
+
+.dark {
+  /* Updated dark mode tokens to maintain consistency with new color scheme */
+  --background: #0f172a; /* Dark slate background */
+  --foreground: #f1f5f9; /* Light slate text */
+  --card: #1e293b; /* Dark slate cards */
+  --card-foreground: #e2e8f0; /* Light slate card text */
+  --popover: #1e293b; /* Dark slate popover */
+  --popover-foreground: #e2e8f0; /* Light slate popover text */
+  --primary: #10b981; /* Brighter emerald for dark mode */
+  --primary-foreground: #0f172a; /* Dark text on bright emerald */
+  --secondary: #059669; /* Darker emerald for secondary */
+  --secondary-foreground: #ffffff; /* White text on secondary */
+  --muted: #334155; /* Dark slate muted */
+  --muted-foreground: #94a3b8; /* Light slate muted text */
+  --accent: #10b981; /* Bright emerald accent */
+  --accent-foreground: #0f172a; /* Dark accent text */
+  --destructive: #ef4444; /* Brighter red for dark mode */
+  --destructive-foreground: #f1f5f9; /* Light destructive text */
+  --border: #334155; /* Dark slate borders */
+  --input: #1e293b; /* Dark slate input background */
+  --ring: rgba(16, 185, 129, 0.3); /* Bright emerald focus ring */
+  --chart-1: #10b981; /* Bright emerald chart */
+  --chart-2: #059669; /* Darker emerald chart */
+  --chart-3: #fbbf24; /* Brighter amber chart */
+  --chart-4: #ef4444; /* Brighter red chart */
+  --chart-5: #a78bfa; /* Brighter violet chart */
+  --sidebar: #1e293b; /* Dark slate sidebar */
+  --sidebar-foreground: #e2e8f0; /* Light slate sidebar text */
+  --sidebar-primary: #10b981; /* Bright emerald sidebar primary */
+  --sidebar-primary-foreground: #0f172a; /* Dark sidebar primary text */
+  --sidebar-accent: #334155; /* Dark slate sidebar accent */
+  --sidebar-accent-foreground: #e2e8f0; /* Light sidebar accent text */
+  --sidebar-border: #334155; /* Dark slate sidebar border */
+  --sidebar-ring: rgba(16, 185, 129, 0.3); /* Bright emerald sidebar ring */
+}
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+
+  /* Added smooth transitions and improved typography */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply text-balance;
+  }
+
+  p {
+    @apply text-pretty leading-relaxed;
+  }
+
+  /* Enhanced button and interactive element styles */
+  button,
+  [role="button"] {
+    @apply transition-all duration-200 ease-in-out;
+  }
+
+  /* Improved focus states for accessibility */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+}
+
+/* Added custom animations for enhanced user experience */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
+}
+
+/* Enhanced card hover effects */
+.card-hover {
+  @apply transition-all duration-200 ease-in-out hover:shadow-lg hover:-translate-y-1;
+}
+
+/* Improved gradient backgrounds for hero sections */
+.gradient-bg {
+  background: linear-gradient(135deg, rgb(5, 150, 105) 0%, rgb(16, 185, 129) 100%);
+}
