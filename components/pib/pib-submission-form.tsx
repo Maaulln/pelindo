@@ -113,11 +113,11 @@ export function PIBSubmissionForm() {
       1000 + Math.random() * 9000
     )}`;
   }
-  
+
   function generateSJCCode() {
     return Math.random().toString(36).substring(2, 10).toUpperCase();
   }
-  
+
   function generateRONumber() {
     const now = new Date();
     return `RO-${now.getFullYear()}${String(now.getMonth() + 1).padStart(
@@ -172,8 +172,11 @@ export function PIBSubmissionForm() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showTaxCalculation, setShowTaxCalculation] = useState(false);
-  const [taxCalculation, setTaxCalculation] = useState<TaxCalculation | null>(null);
-  const [selectedHSCode, setSelectedHSCode] = useState<HSCodeRecommendation | null>(null);
+  const [taxCalculation, setTaxCalculation] = useState<TaxCalculation | null>(
+    null
+  );
+  const [selectedHSCode, setSelectedHSCode] =
+    useState<HSCodeRecommendation | null>(null);
 
   // Auto-fill service berdasarkan origin/destination/vesselName
   useEffect(() => {
@@ -236,11 +239,12 @@ export function PIBSubmissionForm() {
     const fob = Number.parseFloat(formData.fobValue) || 0;
     const freight = Number.parseFloat(formData.freightValue) || 0;
     const insurance = Number.parseFloat(formData.insuranceValue) || 0;
-    
+
     // Mock HS Code - di production bisa diintegrasikan dengan API
     const mockHSCode: HSCodeRecommendation = {
       code: formData.hsCode || "8517.12.00",
-      description: "Telepon untuk jaringan seluler atau untuk jaringan nirkabel lainnya",
+      description:
+        "Telepon untuk jaringan seluler atau untuk jaringan nirkabel lainnya",
       confidence: 85,
       category: "Electronics",
       tarif_bea_masuk: 0.15, // 15%
@@ -286,7 +290,7 @@ export function PIBSubmissionForm() {
         "vesselName",
         "containerNumber",
         "goodsDescription",
-        "fobValue"
+        "fobValue",
       ];
       const missingFields = requiredFields.filter(
         (field) => !formData[field as keyof PIBFormData]
@@ -366,6 +370,58 @@ export function PIBSubmissionForm() {
             </div>
           </div>
         </CardHeader>
+        <CardContent>
+          <div className="bg-muted/30 p-4 rounded-lg space-y-2">
+            <h3 className="font-semibold text-sm">Alur Pengisian Form PIB:</h3>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+              <div className="flex items-start space-x-2">
+                <div className="bg-primary text-primary-foreground w-6 h-6 rounded-full flex items-center justify-center text-sm shrink-0">
+                  1
+                </div>
+                <div className="text-sm">
+                  <p className="font-medium">Isi Data Container</p>
+                  <p className="text-xs text-muted-foreground">
+                    SJC, asal/tujuan, shipper, kapal, container
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-2">
+                <div className="bg-primary text-primary-foreground w-6 h-6 rounded-full flex items-center justify-center text-sm shrink-0">
+                  2
+                </div>
+                <div className="text-sm">
+                  <p className="font-medium">Isi Data Barang & Nilai</p>
+                  <p className="text-xs text-muted-foreground">
+                    Deskripsi barang, HS Code, nilai FOB/freight/insurance
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-2">
+                <div className="bg-primary text-primary-foreground w-6 h-6 rounded-full flex items-center justify-center text-sm shrink-0">
+                  3
+                </div>
+                <div className="text-sm">
+                  <p className="font-medium">Hitung Pajak Impor</p>
+                  <p className="text-xs text-muted-foreground">
+                    Klik tombol hitung untuk melihat bea masuk, PPN, PPh 22
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start space-x-2">
+                <div className="bg-primary text-primary-foreground w-6 h-6 rounded-full flex items-center justify-center text-sm shrink-0">
+                  4
+                </div>
+                <div className="text-sm">
+                  <p className="font-medium">Submit PIB</p>
+                  <p className="text-xs text-muted-foreground">
+                    Kirim PIB ke sistem Bea Cukai setelah semua data
+                    terverifikasi
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </CardContent>
       </Card>
 
       {/* SJC Information */}
@@ -707,7 +763,10 @@ export function PIBSubmissionForm() {
             <div className="text-xs text-muted-foreground space-y-1">
               <p>• Masukkan nomor plat kendaraan yang mengangkut container</p>
               <p>• Format akan otomatis disesuaikan (B1234ABC → B 1234 ABC)</p>
-              <p>• Contoh: B 1234 ABC (Jakarta), L 5678 DE (Surabaya), D 9012 FG (Bandung)</p>
+              <p>
+                • Contoh: B 1234 ABC (Jakarta), L 5678 DE (Surabaya), D 9012 FG
+                (Bandung)
+              </p>
             </div>
           </div>
         </CardContent>
@@ -808,6 +867,41 @@ export function PIBSubmissionForm() {
             <Calculator className="h-4 w-4 mr-2" />
             Hitung Pajak Impor
           </Button>
+
+          {/* Status Alur PIB */}
+          <div className="mt-4 pt-4 border-t border-border">
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-medium">Status Alur PIB</p>
+              <Badge
+                variant={showTaxCalculation ? "secondary" : "outline"}
+                className={
+                  showTaxCalculation
+                    ? "bg-green-100 text-green-800 hover:bg-green-100"
+                    : ""
+                }
+              >
+                {showTaxCalculation ? "Siap Submit" : "Pengisian Data"}
+              </Badge>
+            </div>
+            <div className="w-full bg-muted h-2 rounded-full mt-2 overflow-hidden">
+              <div
+                className="h-full bg-primary transition-all duration-300 rounded-full"
+                style={{
+                  width: showTaxCalculation
+                    ? "100%"
+                    : formData.goodsDescription && formData.fobValue
+                    ? "75%"
+                    : "50%",
+                }}
+              />
+            </div>
+            <div className="flex justify-between mt-1 text-[10px] text-muted-foreground">
+              <span>Data Container</span>
+              <span>Data Barang</span>
+              <span>Perhitungan</span>
+              <span>Submit</span>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
@@ -820,15 +914,20 @@ export function PIBSubmissionForm() {
               <span>Perhitungan Pajak Impor</span>
             </CardTitle>
             <CardDescription>
-              Berdasarkan HS Code: {selectedHSCode.code} - {selectedHSCode.description}
+              Berdasarkan HS Code: {selectedHSCode.code} -{" "}
+              {selectedHSCode.description}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div className="bg-muted/30 p-4 rounded-lg mb-4">
                 <div className="flex justify-between items-center">
-                  <span className="font-medium">CIF Value (Cost, Insurance, Freight)</span>
-                  <span className="font-medium">{formatIDR(taxCalculation.cif_idr)}</span>
+                  <span className="font-medium">
+                    CIF Value (Cost, Insurance, Freight)
+                  </span>
+                  <span className="font-medium">
+                    {formatIDR(taxCalculation.cif_idr)}
+                  </span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
                   FOB + Freight + Insurance = Dasar perhitungan pajak
@@ -840,19 +939,26 @@ export function PIBSubmissionForm() {
                   <div>
                     <span className="font-medium">Bea Masuk</span>
                     <p className="text-xs text-muted-foreground">
-                      {(selectedHSCode.tarif_bea_masuk * 100).toFixed(1)}% dari CIF
+                      {(selectedHSCode.tarif_bea_masuk * 100).toFixed(1)}% dari
+                      CIF
                     </p>
                   </div>
-                  <span className="font-medium">{formatIDR(taxCalculation.beaMasuk)}</span>
+                  <span className="font-medium">
+                    {formatIDR(taxCalculation.beaMasuk)}
+                  </span>
                 </div>
                 <Separator />
 
                 <div className="flex justify-between items-center py-2">
                   <div>
                     <span className="font-medium">PPN</span>
-                    <p className="text-xs text-muted-foreground">11% dari DPP (CIF + Bea Masuk)</p>
+                    <p className="text-xs text-muted-foreground">
+                      11% dari DPP (CIF + Bea Masuk)
+                    </p>
                   </div>
-                  <span className="font-medium">{formatIDR(taxCalculation.ppn)}</span>
+                  <span className="font-medium">
+                    {formatIDR(taxCalculation.ppn)}
+                  </span>
                 </div>
                 <Separator />
 
@@ -860,10 +966,13 @@ export function PIBSubmissionForm() {
                   <div>
                     <span className="font-medium">PPh Pasal 22</span>
                     <p className="text-xs text-muted-foreground">
-                      {formData.hasNPWP ? "2.5%" : "7.5%"} dari DPP ({formData.hasNPWP ? "dengan" : "tanpa"} NPWP)
+                      {formData.hasNPWP ? "2.5%" : "7.5%"} dari DPP (
+                      {formData.hasNPWP ? "dengan" : "tanpa"} NPWP)
                     </p>
                   </div>
-                  <span className="font-medium">{formatIDR(taxCalculation.pph22)}</span>
+                  <span className="font-medium">
+                    {formatIDR(taxCalculation.pph22)}
+                  </span>
                 </div>
               </div>
 
@@ -880,6 +989,33 @@ export function PIBSubmissionForm() {
                 <div className="flex justify-between items-center text-sm text-muted-foreground">
                   <span>Total Landed Cost</span>
                   <span>{formatIDR(taxCalculation.landedCostIdr)}</span>
+                </div>
+              </div>
+
+              {/* Langkah Selanjutnya */}
+              <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-start space-x-2">
+                <div className="text-green-500 mt-0.5">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+                <div className="text-sm text-green-800">
+                  <p className="font-medium">Perhitungan Selesai</p>
+                  <p className="text-xs mt-1">
+                    Perhitungan pajak berhasil! Silakan periksa hasil
+                    perhitungan dan lanjutkan ke langkah terakhir dengan klik
+                    tombol "Submit PIB ke Bea Cukai" di bawah.
+                  </p>
                 </div>
               </div>
             </div>
@@ -959,12 +1095,39 @@ export function PIBSubmissionForm() {
               Simpan Draft
             </Button>
           </div>
-          <p className="text-xs text-muted-foreground mt-2 text-center">
-            {!showTaxCalculation 
-              ? "Mohon isi informasi barang dan hitung pajak terlebih dahulu"
-              : "Pastikan semua data sudah benar sebelum mengirim PIB ke sistem Bea Cukai"
-            }
-          </p>
+          {!showTaxCalculation ? (
+            <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-start space-x-2">
+              <div className="text-amber-500 mt-0.5">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+              </div>
+              <div className="text-sm text-amber-800">
+                <p className="font-medium">Alur Pengisian PIB</p>
+                <p className="text-xs mt-1">
+                  Lengkapi data barang dan nilai, lalu klik tombol "Hitung Pajak
+                  Impor" untuk melihat perhitungan pajak sebelum submit
+                </p>
+              </div>
+            </div>
+          ) : (
+            <p className="text-xs text-muted-foreground mt-2 text-center">
+              Pastikan semua data sudah benar sebelum mengirim PIB ke sistem Bea
+              Cukai
+            </p>
+          )}
         </CardContent>
       </Card>
     </div>
