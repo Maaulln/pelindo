@@ -19,9 +19,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import {
   FileText,
   Ship,
@@ -33,6 +30,9 @@ import {
   Calculator,
   DollarSign,
 } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
 interface TaxCalculation {
   cif_idr: number;
@@ -113,11 +113,9 @@ export function PIBSubmissionForm() {
       1000 + Math.random() * 9000
     )}`;
   }
-  
   function generateSJCCode() {
     return Math.random().toString(36).substring(2, 10).toUpperCase();
   }
-  
   function generateRONumber() {
     const now = new Date();
     return `RO-${now.getFullYear()}${String(now.getMonth() + 1).padStart(
@@ -285,8 +283,6 @@ export function PIBSubmissionForm() {
         "shipperName",
         "vesselName",
         "containerNumber",
-        "goodsDescription",
-        "fobValue"
       ];
       const missingFields = requiredFields.filter(
         (field) => !formData[field as keyof PIBFormData]
@@ -305,7 +301,6 @@ export function PIBSubmissionForm() {
       console.log("[GATEGO] PIB submission completed");
       alert("PIB berhasil disubmit! Nomor registrasi akan dikirim via email.");
 
-      // Reset form
       setFormData({
         sjcNumber: generateSJCNumber(),
         sjcCode: generateSJCCode(),
@@ -336,9 +331,77 @@ export function PIBSubmissionForm() {
         equipmentOperator: "",
         equipmentCode: "AUTO-ALAT-01",
       });
-      setShowTaxCalculation(false);
-      setTaxCalculation(null);
-      setSelectedHSCode(null);
+    } catch (error) {
+      console.error("[GATEGO] PIB submission error:", error);
+      alert("Terjadi kesalahan saat mengirim PIB. Silakan coba lagi.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  };
+
+  const handleSubmit = async () => {
+    console.log("[GATEGO] PIB submit button clicked");
+    console.log("[GATEGO] Form data:", formData);
+
+    setIsSubmitting(true);
+
+    try {
+      const requiredFields = [
+        "sjcNumber",
+        "origin",
+        "destination",
+        "shipperName",
+        "vesselName",
+        "containerNumber",
+      ];
+      const missingFields = requiredFields.filter(
+        (field) => !formData[field as keyof PIBFormData]
+      );
+
+      if (missingFields.length > 0) {
+        alert(`Mohon lengkapi field berikut: ${missingFields.join(", ")}`);
+        setIsSubmitting(false);
+        return;
+      }
+
+      console.log("[GATEGO] Starting PIB submission process");
+      // Simulate PIB submission process
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      console.log("[GATEGO] PIB submission completed");
+      alert("PIB berhasil disubmit! Nomor registrasi akan dikirim via email.");
+
+      setFormData({
+        sjcNumber: generateSJCNumber(),
+        sjcCode: generateSJCCode(),
+        stuffingDate: "",
+        sjcPrintDate: getJakartaDateTimeLocalString(),
+        origin: "",
+        destination: "",
+        service: "",
+        shipperName: "",
+        shipperAddress: "",
+        shipperPhone: "",
+        vesselName: "",
+        roNumber: generateRONumber(),
+        containerPrefix: "",
+        containerNumber: "",
+        containerSize: "",
+        containerStatus: "FCL",
+        sealNumber: "",
+        spmuCode: "30408989 M6 19 SBL A",
+        vehiclePlateNumber: "",
+        goodsDescription: "",
+        hsCode: "",
+        fobValue: "",
+        freightValue: "",
+        insuranceValue: "",
+        hasNPWP: true,
+        sjcClerk: loggedInUser.name,
+        equipmentOperator: "",
+        equipmentCode: "AUTO-ALAT-01",
+      });
     } catch (error) {
       console.error("[GATEGO] PIB submission error:", error);
       alert("Terjadi kesalahan saat mengirim PIB. Silakan coba lagi.");
@@ -482,6 +545,7 @@ export function PIBSubmissionForm() {
                   <SelectItem value="Surabaya">Surabaya</SelectItem>
                   <SelectItem value="Makassar">Makassar</SelectItem>
                   <SelectItem value="Jakarta">Jakarta</SelectItem>
+                  <SelectItem value="Balikpapan">Balikpapan</SelectItem>
                   <SelectItem value="Balikpapan">Balikpapan</SelectItem>
                   <SelectItem value="Malaysia">Malaysia</SelectItem>
                   <SelectItem value="Singapura">Singapura</SelectItem>
@@ -707,7 +771,10 @@ export function PIBSubmissionForm() {
             <div className="text-xs text-muted-foreground space-y-1">
               <p>• Masukkan nomor plat kendaraan yang mengangkut container</p>
               <p>• Format akan otomatis disesuaikan (B1234ABC → B 1234 ABC)</p>
-              <p>• Contoh: B 1234 ABC (Jakarta), L 5678 DE (Surabaya), D 9012 FG (Bandung)</p>
+              <p>
+                • Contoh: B 1234 ABC (Jakarta), L 5678 DE (Surabaya), D 9012 FG
+                (Bandung)
+              </p>
             </div>
           </div>
         </CardContent>
@@ -938,7 +1005,7 @@ export function PIBSubmissionForm() {
           <div className="flex space-x-4">
             <Button
               onClick={handleSubmit}
-              disabled={isSubmitting || !showTaxCalculation}
+              disabled={isSubmitting}
               className="flex-1"
               type="button"
             >
@@ -960,10 +1027,8 @@ export function PIBSubmissionForm() {
             </Button>
           </div>
           <p className="text-xs text-muted-foreground mt-2 text-center">
-            {!showTaxCalculation 
-              ? "Mohon isi informasi barang dan hitung pajak terlebih dahulu"
-              : "Pastikan semua data sudah benar sebelum mengirim PIB ke sistem Bea Cukai"
-            }
+            Pastikan semua data sudah benar sebelum mengirim PIB ke sistem Bea
+            Cukai
           </p>
         </CardContent>
       </Card>
